@@ -1,0 +1,919 @@
+/* Galaxy Craft — StarCraft Terran 1:1 (plugin-only).
+   Crush host glass/transparent chrome. Every surface = metal / screen. */
+
+body.appearance-skin-active,
+body.appearance-skin-active .app-container {
+  --gc-space: #040d14;
+  --gc-metal: #11151c;
+  --gc-metal-mid: #1a232c;
+  --gc-metal-hi: #2a3644;
+  --gc-hull: #0a0f16;
+  --gc-screen: #020608;
+  --gc-screen-deep: #010406;
+  --gc-green: #4ade80;
+  --gc-green-dim: #166534;
+  --gc-blue: #0ea5e9;
+  --gc-amber: #f59e0b;
+  --gc-border: #1e3a5f;
+  --gc-border-hi: #5b748f;
+  --gc-slate: #94a3b8;
+  --gc-slate-dim: #64748b;
+  --radius: 0px;
+  --radius-sm: 0px;
+  --bg: #040d14;
+  --bg-panel: #0a0f16;
+  --sidebar: #0a0f16;
+  --surface: #11151c;
+}
+
+/* ── Global canvas ─────────────────────────────────────────────── */
+
+body.appearance-skin-active {
+  background-color: var(--gc-space) !important;
+  background-image:
+    radial-gradient(circle at 50% 50%, rgba(10, 20, 30, 0.85) 0%, rgba(2, 5, 8, 1) 100%),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+  background-blend-mode: overlay;
+  color: #cbd5e1;
+}
+
+body.appearance-skin-active .app-container,
+body.appearance-skin-active .workspace-dock-layout,
+body.appearance-skin-active .workspace-dock-center,
+body.appearance-skin-active .chat-view-layout,
+body.appearance-skin-active .focus-editor-area {
+  background: transparent !important;
+}
+
+/* CRT scanlines */
+body.appearance-skin-active::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9990;
+  opacity: 0.32;
+  background:
+    linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.22) 50%),
+    linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.015), rgba(0, 0, 255, 0.04));
+  background-size: 100% 4px, 3px 100%;
+}
+
+/* Kill host glass / translucent dock paint (layout.css) */
+body.appearance-skin-active .glass-panel,
+body.appearance-skin-active .app-header.glass-panel,
+body.appearance-skin-active .sidebar-stacked-panel,
+body.appearance-skin-active .dock-rail,
+body.appearance-skin-active .workspace-dock-layout .glass-panel {
+  background: var(--gc-hull) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+/* ── SCPanel hulls + checkered armor borders ───────────────────── */
+
+body.appearance-skin-active .gc-sc-panel {
+  position: relative !important;
+  background: var(--gc-metal) !important;
+  border: 2px solid #000 !important;
+  border-radius: 0 !important;
+  box-shadow:
+    inset 0 0 20px rgba(0, 0, 0, 0.9),
+    0 10px 25px rgba(0, 0, 0, 0.75) !important;
+  overflow: visible !important;
+}
+
+/* Injected striped borders (TerranBorderSVG) */
+body.appearance-skin-active .gc-panel-stripe {
+  position: absolute;
+  z-index: 5;
+  pointer-events: none;
+}
+
+body.appearance-skin-active .gc-panel-stripe--h {
+  left: 22px;
+  right: 22px;
+  height: 5px;
+  background: repeating-linear-gradient(
+    90deg,
+    #1a232c 0 10px,
+    #11151c 10px 20px
+  );
+  box-shadow:
+    inset 0 1px 0 #4b5d6e,
+    inset 0 -1px 0 #000;
+}
+
+body.appearance-skin-active .gc-panel-stripe--h.top {
+  top: -2px;
+}
+
+body.appearance-skin-active .gc-panel-stripe--h.bottom {
+  bottom: -2px;
+}
+
+body.appearance-skin-active .gc-panel-stripe--v {
+  top: 22px;
+  bottom: 22px;
+  width: 5px;
+  background: repeating-linear-gradient(
+    180deg,
+    #1a232c 0 10px,
+    #11151c 10px 20px
+  );
+  box-shadow:
+    inset 1px 0 0 #4b5d6e,
+    inset -1px 0 0 #000;
+}
+
+body.appearance-skin-active .gc-panel-stripe--v.left {
+  left: -2px;
+}
+
+body.appearance-skin-active .gc-panel-stripe--v.right {
+  right: -2px;
+}
+
+/* CSS checkered edge fallback on undecorated shells */
+body.appearance-skin-active .dock-rail-shell,
+body.appearance-skin-active .editor-group,
+body.appearance-skin-active .chat-column,
+body.appearance-skin-active .settings-view-sidebar-shell,
+body.appearance-skin-active .settings-view-main {
+  border: 2px solid #000 !important;
+  border-radius: 0 !important;
+  box-shadow:
+    inset 0 0 16px rgba(0, 0, 0, 0.85),
+    0 8px 20px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* ── LEFT / RIGHT RAIL — solid hull (mock #0a0f16) ─────────────── */
+
+body.appearance-skin-active .dock-rail-shell,
+body.appearance-skin-active .dock-rail-shell .dock-rail,
+body.appearance-skin-active .dock-rail-shell .dock-rail-inner,
+body.appearance-skin-active .dock-rail-shell .dock-rail-family-stack,
+body.appearance-skin-active .dock-rail-shell .dock-rail-family-section,
+body.appearance-skin-active .dock-rail-shell .dock-rail-sidebar-section,
+body.appearance-skin-active .dock-rail-shell .dock-rail-tab-stack,
+body.appearance-skin-active .dock-rail-shell .dock-rail-tab-bodies,
+body.appearance-skin-active .dock-rail-shell .sidebar-panel-content,
+body.appearance-skin-active .dock-rail-shell .sidebar-stacked-panel,
+body.appearance-skin-active .dock-rail-shell .ducky-tree,
+body.appearance-skin-active .dock-rail-shell .file-tree,
+body.appearance-skin-active .dock-rail-shell .file-tree-root {
+  background: var(--gc-hull) !important;
+  border-radius: 0 !important;
+}
+
+body.appearance-skin-active .dock-rail-shell {
+  position: relative;
+}
+
+body.appearance-skin-active .dock-rail-shell--left {
+  border-right: 2px solid #000 !important;
+  background-image:
+    linear-gradient(180deg, rgba(26, 35, 44, 0.35) 0%, transparent 48px) !important;
+}
+
+body.appearance-skin-active .dock-rail-shell--right {
+  border-left: 2px solid #000 !important;
+  background-image:
+    linear-gradient(180deg, rgba(26, 35, 44, 0.35) 0%, transparent 48px) !important;
+}
+
+/* Glowing blue seam where each rail meets the center (mock accent line) */
+body.appearance-skin-active .dock-rail-shell--left::after,
+body.appearance-skin-active .dock-rail-shell--right::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  pointer-events: none;
+  z-index: 7;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(14, 165, 233, 0.45) 15%,
+    rgba(14, 165, 233, 0.45) 85%,
+    transparent
+  );
+  box-shadow: 0 0 8px rgba(14, 165, 233, 0.4);
+}
+
+body.appearance-skin-active .dock-rail-shell--left::after {
+  right: -2px;
+}
+
+body.appearance-skin-active .dock-rail-shell--right::after {
+  left: -2px;
+}
+
+/* Section accordion headers — metal bar */
+body.appearance-skin-active .sidebar-section-header,
+body.appearance-skin-active .sidebar-section-header--stacked,
+body.appearance-skin-active .file-tree-section-header-row,
+body.appearance-skin-active .dock-rail-shell .sidebar-section-header {
+  background: #111823 !important;
+  color: #cbd5e1 !important;
+  font-weight: 800 !important;
+  font-size: 11px !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase !important;
+  border-bottom: 1px solid color-mix(in srgb, var(--gc-border) 50%, transparent) !important;
+  border-radius: 0 !important;
+}
+
+body.appearance-skin-active .sidebar-section-header:hover,
+body.appearance-skin-active .sidebar-section-header--stacked:hover {
+  background: #1a2332 !important;
+}
+
+/* Tree rows */
+body.appearance-skin-active .sidebar-tree-row,
+body.appearance-skin-active .ducky-tree .sidebar-tree-row {
+  border-left: 2px solid transparent !important;
+  border-radius: 0 !important;
+  color: #cbd5e1;
+}
+
+body.appearance-skin-active .sidebar-tree-row:hover {
+  background: rgba(30, 58, 95, 0.28) !important;
+  border-left-color: var(--gc-blue) !important;
+}
+
+body.appearance-skin-active .sidebar-tree-row.is-active,
+body.appearance-skin-active .sidebar-tree-row.is-selected {
+  background: rgba(30, 64, 175, 0.28) !important;
+  border-left-color: #60a5fa !important;
+  color: #bfdbfe !important;
+}
+
+/* Guides + indent come from global.css --sidebar-tree-indent-level; don't fight them. */
+body.appearance-skin-active .sidebar-tree-children {
+  border-left: none;
+  margin-left: 0;
+}
+body.appearance-skin-active .sidebar-tree-children::before {
+  background: rgba(30, 58, 95, 0.55);
+}
+
+/* Screen wells inside panels */
+body.appearance-skin-active .editor-group-body,
+body.appearance-skin-active .settings-view-content,
+body.appearance-skin-active .chat-pane-content,
+body.appearance-skin-active .sidebar-panel-content,
+body.appearance-skin-active .dock-rail-tab-bodies {
+  position: relative;
+  background: var(--gc-screen-deep) !important;
+  box-shadow:
+    inset 0 0 20px rgba(20, 255, 100, 0.045),
+    inset 0 4px 10px rgba(0, 0, 0, 0.8) !important;
+  border: 1px solid #0d1612 !important;
+  border-radius: 0 !important;
+  margin: 2px;
+}
+
+/* ── TV / CRT scanline overlays on every screen surface ────────── */
+
+body.appearance-skin-active .editor-group-body::before,
+body.appearance-skin-active .settings-view-content::before,
+body.appearance-skin-active .chat-pane-content::before,
+body.appearance-skin-active .sidebar-panel-content::before,
+body.appearance-skin-active .dock-rail-tab-bodies::before,
+body.appearance-skin-active .app-header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+  background:
+    linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.28) 50%),
+    linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  background-size: 100% 4px, 3px 100%;
+  mix-blend-mode: screen;
+  opacity: 0.5;
+}
+
+/* subtle green phosphor glow band that drifts down the screens */
+body.appearance-skin-active .editor-group-body::after,
+body.appearance-skin-active .chat-pane-content::after,
+body.appearance-skin-active .dock-rail-tab-bodies::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 40%;
+  top: -40%;
+  pointer-events: none;
+  z-index: 5;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(74, 222, 128, 0.05),
+    transparent
+  );
+  animation: gc-tv-sweep 6s linear infinite;
+}
+
+@keyframes gc-tv-sweep {
+  0% { top: -40%; }
+  100% { top: 140%; }
+}
+
+/* ── Header ────────────────────────────────────────────────────── */
+
+body.appearance-skin-active .app-header,
+body.appearance-skin-active .app-header.glass-panel {
+  position: relative;
+  min-height: 40px !important;
+  height: auto !important;
+  background:
+    linear-gradient(180deg, #1a232c 0%, #0a0f16 55%, #05080c 100%) !important;
+  border-bottom: 2px solid #000 !important;
+  box-shadow:
+    inset 0 1px 0 rgba(91, 116, 143, 0.35),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.8),
+    0 2px 6px rgba(0, 0, 0, 0.6) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Amber energy line under the header (mock accent) */
+body.appearance-skin-active .app-header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 2px;
+  pointer-events: none;
+  z-index: 6;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(245, 158, 11, 0.5) 20%,
+    rgba(14, 165, 233, 0.5) 80%,
+    transparent
+  );
+  box-shadow: 0 0 8px rgba(14, 165, 233, 0.35);
+}
+
+body.appearance-skin-active .app-header-project-label {
+  color: var(--gc-amber) !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase !important;
+  text-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+}
+
+body.appearance-skin-active .app-header-divider {
+  background: var(--gc-border) !important;
+  opacity: 0.7;
+}
+
+/* Search / center cluster as CRT well */
+body.appearance-skin-active .app-header-center {
+  background: #111823 !important;
+  border: 1px solid var(--gc-border) !important;
+  border-radius: 0 !important;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.7);
+  min-height: 24px;
+  padding: 0 6px;
+}
+
+/* ── Buttons — SCButton plates (crush host icon-btn / vim.css) ─── */
+
+body.appearance-skin-active button,
+body.appearance-skin-active .icon-btn,
+body.appearance-skin-active .settings-btn,
+body.appearance-skin-active .btn,
+body.appearance-skin-active .btn-primary,
+body.appearance-skin-active .btn-secondary,
+body.appearance-skin-active .store-card-btn,
+body.appearance-skin-active .modal-confirm-btn,
+body.appearance-skin-active .modal-cancel-btn,
+body.appearance-skin-active .chat-pane-send-btn,
+body.appearance-skin-active .chat-pane-stop-btn,
+body.appearance-skin-active .connection-status-btn,
+body.appearance-skin-active .window-control-btn,
+body.appearance-skin-active .plugin-header-btn,
+body.appearance-skin-active .sidebar-toggle-btn,
+body.appearance-skin-active .app-header-nav-btn,
+body.appearance-skin-active .app-header-workflow-btn,
+body.appearance-skin-active .editor-tab-btn,
+body.appearance-skin-active .editor-tab-bar-menu-btn,
+body.appearance-skin-active .settings-view-header-action-btn,
+body.appearance-skin-active .settings-view-back-btn,
+body.appearance-skin-active .app-header-trailing button,
+body.appearance-skin-active .app-header button.app-header-vim-btn,
+body.appearance-skin-active .app-header button.app-header-save-btn,
+body.appearance-skin-active header.app-header.glass-panel button.app-header-vim-btn.icon-btn,
+body.appearance-skin-active header.app-header.glass-panel button.app-header-save-btn {
+  position: relative !important;
+  border-radius: 0 !important;
+  border: 2px solid #475569 !important;
+  border-bottom-color: #000 !important;
+  background-color: #1a232c !important;
+  background-image:
+    radial-gradient(circle at 4px 4px, rgba(0, 0, 0, 0.55) 1.2px, transparent 1.4px),
+    radial-gradient(circle at calc(100% - 4px) calc(100% - 4px), rgba(0, 0, 0, 0.55) 1.2px, transparent 1.4px),
+    linear-gradient(180deg, #2a3644 0%, #131921 100%) !important;
+  color: #94a3b8 !important;
+  font-weight: 700 !important;
+  font-size: 10px !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.6) !important;
+  clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px) !important;
+  transition: color 0.1s, border-color 0.1s, transform 0.08s, box-shadow 0.1s, filter 0.1s !important;
+}
+
+/* Don't plate every editor-tab / settings sidebar tab as a button */
+body.appearance-skin-active button.editor-tab,
+body.appearance-skin-active button.settings-view-header-tab,
+body.appearance-skin-active button.settings-view-sidebar-tab {
+  clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%, 0 8px) !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+  letter-spacing: 0.12em !important;
+  background-image: none !important;
+  background: var(--gc-metal) !important;
+  text-transform: uppercase !important;
+}
+
+body.appearance-skin-active button:hover,
+body.appearance-skin-active .icon-btn:hover,
+body.appearance-skin-active .app-header-trailing button:hover:not(:disabled),
+body.appearance-skin-active .window-control-btn:hover,
+body.appearance-skin-active .connection-status-btn:hover {
+  color: #e2e8f0 !important;
+  border-color: #94a3b8 !important;
+  border-bottom-color: #000 !important;
+  filter: brightness(1.1);
+}
+
+body.appearance-skin-active button:active,
+body.appearance-skin-active .icon-btn:active {
+  transform: translateY(1px);
+  box-shadow: none !important;
+}
+
+body.appearance-skin-active .icon-btn,
+body.appearance-skin-active .window-control-btn,
+body.appearance-skin-active .connection-status-btn,
+body.appearance-skin-active .plugin-header-btn,
+body.appearance-skin-active .sidebar-toggle-btn,
+body.appearance-skin-active .app-header-nav-btn {
+  min-width: 28px !important;
+  min-height: 26px !important;
+  padding: 3px 6px !important;
+  letter-spacing: 0 !important;
+}
+
+/* Vim — amber SCButton */
+body.appearance-skin-active .app-header button.app-header-vim-btn,
+body.appearance-skin-active .app-header button.app-header-vim-btn.icon-btn,
+body.appearance-skin-active header.app-header.glass-panel button.app-header-vim-btn.icon-btn {
+  min-width: 44px !important;
+  min-height: 26px !important;
+  padding: 2px 12px !important;
+  border-color: #b45309 !important;
+  border-bottom-color: #000 !important;
+  color: #fbbf24 !important;
+  text-shadow: 0 0 8px rgba(245, 158, 11, 0.45) !important;
+  background-image:
+    radial-gradient(circle at 4px 4px, rgba(0, 0, 0, 0.55) 1.2px, transparent 1.4px),
+    radial-gradient(circle at calc(100% - 4px) calc(100% - 4px), rgba(0, 0, 0, 0.55) 1.2px, transparent 1.4px),
+    linear-gradient(180deg, #2a3644 0%, #131921 100%) !important;
+}
+
+body.appearance-skin-active .app-header button.app-header-vim-btn.is-active,
+body.appearance-skin-active header.app-header.glass-panel button.app-header-vim-btn.icon-btn.is-active {
+  border-color: var(--gc-amber) !important;
+  color: var(--gc-amber) !important;
+  box-shadow:
+    0 0 12px rgba(245, 158, 11, 0.5),
+    0 4px 6px rgba(0, 0, 0, 0.55) !important;
+  background-image:
+    radial-gradient(circle at 4px 4px, rgba(0, 0, 0, 0.55) 1.2px, transparent 1.4px),
+    radial-gradient(circle at calc(100% - 4px) calc(100% - 4px), rgba(0, 0, 0, 0.55) 1.2px, transparent 1.4px),
+    linear-gradient(180deg, #2a3644 0%, #1a232c 100%) !important;
+}
+
+/* Save — blue SCButton */
+body.appearance-skin-active .app-header button.app-header-save-btn,
+body.appearance-skin-active header.app-header.glass-panel button.app-header-save-btn {
+  min-height: 26px !important;
+  padding: 2px 14px !important;
+  border-color: var(--gc-blue) !important;
+  border-bottom-color: #000 !important;
+  color: #38bdf8 !important;
+  text-shadow: 0 0 8px rgba(14, 165, 233, 0.4) !important;
+  background-image:
+    radial-gradient(circle at 4px 4px, rgba(0, 0, 0, 0.55) 1.2px, transparent 1.4px),
+    radial-gradient(circle at calc(100% - 4px) calc(100% - 4px), rgba(0, 0, 0, 0.55) 1.2px, transparent 1.4px),
+    linear-gradient(180deg, #2a3644 0%, #131921 100%) !important;
+}
+
+body.appearance-skin-active .app-header button.app-header-save-btn:disabled {
+  opacity: 0.4 !important;
+  filter: grayscale(0.35);
+  border-color: #475569 !important;
+  color: #64748b !important;
+  text-shadow: none !important;
+}
+
+body.appearance-skin-active .chat-pane-send-btn--has-text-can-send,
+body.appearance-skin-active .modal-confirm-btn:not(.is-disabled),
+body.appearance-skin-active .btn-primary {
+  border-color: var(--gc-amber) !important;
+  border-bottom-color: #000 !important;
+  color: var(--gc-amber) !important;
+  text-shadow: 0 0 8px rgba(245, 158, 11, 0.4) !important;
+}
+
+body.appearance-skin-active .plugin-header-btn.is-active,
+body.appearance-skin-active .connection-status-btn.is-active {
+  color: var(--gc-blue) !important;
+  border-color: var(--gc-blue) !important;
+  border-bottom-color: #000 !important;
+  box-shadow:
+    0 0 10px rgba(14, 165, 233, 0.4),
+    0 4px 6px rgba(0, 0, 0, 0.55) !important;
+}
+
+body.appearance-skin-active .window-controls {
+  gap: 4px !important;
+}
+
+body.appearance-skin-active .window-control-btn {
+  width: 28px !important;
+  height: 26px !important;
+}
+
+body.appearance-skin-active .window-control-btn.is-close {
+  border-color: #7f1d1d !important;
+  border-bottom-color: #000 !important;
+  color: #f87171 !important;
+  background-image:
+    radial-gradient(circle at 4px 4px, rgba(0, 0, 0, 0.55) 1.2px, transparent 1.4px),
+    radial-gradient(circle at calc(100% - 4px) calc(100% - 4px), rgba(0, 0, 0, 0.55) 1.2px, transparent 1.4px),
+    linear-gradient(180deg, #3f1d1d 0%, #1a0a0a 100%) !important;
+}
+
+body.appearance-skin-active .window-control-btn.is-close:hover {
+  color: #fecaca !important;
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.55) !important;
+}
+
+/* SYSTEMS ONLINE */
+body.appearance-skin-active .app-header-trailing {
+  position: relative;
+  padding-left: 148px;
+}
+
+body.appearance-skin-active .app-header-trailing::before {
+  content: "SYSTEMS ONLINE";
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding-left: 12px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  color: #4ade80;
+  text-shadow: 0 0 6px rgba(74, 222, 128, 0.55);
+  pointer-events: none;
+  white-space: nowrap;
+  background: radial-gradient(circle at 3px 50%, #22c55e 0 3px, transparent 3.5px);
+  filter: drop-shadow(0 0 4px #22c55e);
+}
+
+/* ── Tabs — SCTab ──────────────────────────────────────────────── */
+
+body.appearance-skin-active .editor-tabs-shell,
+body.appearance-skin-active .editor-tab-bar-row {
+  background: #05080c !important;
+  border-radius: 0 !important;
+  border-bottom: 2px solid color-mix(in srgb, var(--gc-border) 55%, transparent) !important;
+}
+
+body.appearance-skin-active .editor-tab,
+body.appearance-skin-active .settings-view-header-tab,
+body.appearance-skin-active button.editor-tab,
+body.appearance-skin-active button.settings-view-header-tab {
+  border: 2px solid #334155 !important;
+  border-bottom: none !important;
+  background: var(--gc-metal) !important;
+  color: #64748b !important;
+  font-weight: 700 !important;
+  font-size: 10px !important;
+}
+
+body.appearance-skin-active .editor-tab:hover,
+body.appearance-skin-active .settings-view-header-tab:hover {
+  color: #cbd5e1 !important;
+  background: var(--gc-metal-mid) !important;
+}
+
+body.appearance-skin-active .editor-tab.is-active,
+body.appearance-skin-active .settings-view-header-tab.is-active,
+body.appearance-skin-active button.editor-tab.is-active {
+  z-index: 2;
+  background: var(--gc-screen-deep) !important;
+  border-color: var(--gc-blue) !important;
+  color: var(--gc-blue) !important;
+  box-shadow: inset 0 10px 15px -3px rgba(14, 165, 233, 0.12) !important;
+  text-shadow: 0 0 8px rgba(14, 165, 233, 0.45);
+}
+
+body.appearance-skin-active .editor-tab.is-active::before,
+body.appearance-skin-active .settings-view-header-tab.is-active::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #60a5fa;
+  box-shadow: 0 0 8px #3b82f6;
+  pointer-events: none;
+}
+
+/* Settings nav */
+body.appearance-skin-active .settings-view-sidebar,
+body.appearance-skin-active .settings-view-sidebar-shell {
+  background: var(--gc-hull) !important;
+}
+
+body.appearance-skin-active .settings-view-sidebar-tab,
+body.appearance-skin-active button.settings-view-sidebar-tab {
+  border-radius: 0 !important;
+  border: none !important;
+  border-left: 2px solid transparent !important;
+  clip-path: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  background-image: none !important;
+  color: #94a3b8 !important;
+  font-weight: 700 !important;
+  font-size: 11px !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+}
+
+body.appearance-skin-active .settings-view-sidebar-tab:hover {
+  color: #e2e8f0 !important;
+  background: rgba(14, 165, 233, 0.08) !important;
+}
+
+body.appearance-skin-active .settings-view-sidebar-tab.is-active {
+  color: var(--gc-amber) !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  border-left-color: var(--gc-amber) !important;
+  box-shadow: inset 2px 0 10px rgba(245, 158, 11, 0.2) !important;
+}
+
+body.appearance-skin-active .settings-view-sidebar-tab--support:not(.is-active) {
+  background: rgba(245, 158, 11, 0.12) !important;
+  color: var(--gc-amber) !important;
+  border-left-color: var(--gc-amber) !important;
+}
+
+/* ── Inputs ────────────────────────────────────────────────────── */
+
+body.appearance-skin-active input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+body.appearance-skin-active textarea,
+body.appearance-skin-active select,
+body.appearance-skin-active .settings-input,
+body.appearance-skin-active .chat-pane-textarea {
+  border-radius: 0 !important;
+  border: 1px solid #334155 !important;
+  background: var(--gc-hull) !important;
+  color: #cbd5e1 !important;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.65);
+  font-family: var(--font-mono) !important;
+}
+
+body.appearance-skin-active input:focus,
+body.appearance-skin-active textarea:focus,
+body.appearance-skin-active select:focus,
+body.appearance-skin-active .settings-input:focus,
+body.appearance-skin-active .chat-pane-input-box--focused {
+  border-color: var(--gc-blue) !important;
+  box-shadow:
+    inset 0 2px 6px rgba(0, 0, 0, 0.65),
+    0 0 0 1px rgba(14, 165, 233, 0.35) !important;
+  outline: none !important;
+}
+
+body.appearance-skin-active .chat-pane-input-box {
+  border-radius: 0 !important;
+  border: 1px solid color-mix(in srgb, var(--gc-amber) 45%, #334155) !important;
+  background: #111823 !important;
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.5);
+}
+
+/* ── Chat / cards / modals ─────────────────────────────────────── */
+
+body.appearance-skin-active .tool-card,
+body.appearance-skin-active .card,
+body.appearance-skin-active .chat-shortcut-card,
+body.appearance-skin-active .message-bubble,
+body.appearance-skin-active .chat-message-card {
+  border-radius: 0 !important;
+  background: #111823 !important;
+  border: 1px solid color-mix(in srgb, var(--gc-border) 55%, transparent) !important;
+}
+
+body.appearance-skin-active .tool-card:hover {
+  border-color: color-mix(in srgb, var(--gc-blue) 40%, var(--gc-border)) !important;
+  background: #1a2332 !important;
+}
+
+body.appearance-skin-active .modal,
+body.appearance-skin-active .context-menu,
+body.appearance-skin-active .editor-tab-hover-card {
+  border: 2px solid #000 !important;
+  border-radius: 0 !important;
+  background: var(--gc-metal) !important;
+  box-shadow:
+    inset 0 0 20px rgba(0, 0, 0, 0.85),
+    0 0 0 1px color-mix(in srgb, var(--gc-blue) 35%, transparent),
+    0 16px 40px rgba(0, 0, 0, 0.7) !important;
+}
+
+/* Status bar */
+body.appearance-skin-active .app-status-bar,
+body.appearance-skin-active .status-bar,
+body.appearance-skin-active .settings-view-sidebar-footer {
+  position: relative;
+  background:
+    linear-gradient(180deg, #0a0f16 0%, #05080c 100%) !important;
+  border-top: 2px solid #000 !important;
+  color: #64748b !important;
+  font-size: 10px !important;
+  letter-spacing: 0.04em;
+}
+
+body.appearance-skin-active .app-status-bar::before,
+body.appearance-skin-active .status-bar::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -2px;
+  height: 2px;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(14, 165, 233, 0.4) 30%,
+    rgba(74, 222, 128, 0.35) 70%,
+    transparent
+  );
+  box-shadow: 0 0 6px rgba(14, 165, 233, 0.3);
+}
+
+/* Scrollbars */
+body.appearance-skin-active ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+body.appearance-skin-active ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+body.appearance-skin-active ::-webkit-scrollbar-thumb {
+  background: #1e3a5f;
+  border-radius: 0;
+}
+
+body.appearance-skin-active ::-webkit-scrollbar-thumb:hover {
+  background: var(--gc-blue);
+}
+
+body.appearance-skin-active .icon-btn-badge,
+body.appearance-skin-active .store-update-dot {
+  border-radius: 0 !important;
+  box-shadow: 0 0 6px rgba(14, 165, 233, 0.55);
+}
+
+body.appearance-skin-active ::selection {
+  background: rgba(14, 165, 233, 0.4);
+  color: #fff;
+}
+
+body.appearance-skin-active :focus-visible {
+  outline: 1px solid var(--gc-blue) !important;
+  outline-offset: 1px;
+}
+
+body.appearance-skin-active .sidebar-resize-handle:hover,
+body.appearance-skin-active .sidebar-resize-handle.is-dragging,
+body.appearance-skin-active .chat-column-resize-handle:hover,
+body.appearance-skin-active .chat-column-resize-handle.is-dragging,
+body.appearance-skin-active .settings-view-sidebar-resize-handle:hover,
+body.appearance-skin-active .settings-view-sidebar-resize-handle.is-dragging,
+body.appearance-skin-active .dock-rail-resize-handle:hover {
+  background: color-mix(in srgb, var(--gc-blue) 45%, transparent) !important;
+}
+
+/* ── Transitions ───────────────────────────────────────────────── */
+
+body.appearance-skin-active .gc-anim-host {
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+body.appearance-skin-active .gc-panel-clone,
+.gc-panel-clone {
+  position: fixed;
+  z-index: 40;
+  overflow: hidden;
+  pointer-events: none;
+  background: var(--gc-screen-deep, #010406);
+  animation: gc-panel-out 0.15s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+body.appearance-skin-active .gc-panel-in {
+  animation: gc-panel-in 0.15s cubic-bezier(0, 0, 0.2, 1) forwards;
+}
+
+body.appearance-skin-active .settings-view-sidebar-shell.gc-sidebar-in {
+  animation: gc-sidebar-in 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+body.appearance-skin-active .settings-view-content.gc-settings-main-in {
+  animation: gc-settings-main-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.06s both;
+}
+
+.gc-sidebar-leave-clone,
+.gc-settings-main-leave-clone {
+  position: fixed;
+  z-index: 45;
+  overflow: hidden;
+  pointer-events: none;
+  background: #0a0f16;
+}
+
+.gc-sidebar-leave-clone {
+  animation: gc-sidebar-out 0.28s ease-in forwards;
+}
+
+.gc-settings-main-leave-clone {
+  animation: gc-settings-main-out 0.28s ease-in forwards;
+}
+
+@keyframes gc-panel-out {
+  0% { transform: translateX(0); opacity: 1; filter: contrast(1) brightness(1); }
+  100% { transform: translateX(-30px); opacity: 0; filter: contrast(1.5) brightness(1.5); }
+}
+
+@keyframes gc-panel-in {
+  0% { transform: translateX(30px); opacity: 0; filter: contrast(1.5) brightness(1.5); }
+  100% { transform: translateX(0); opacity: 1; filter: contrast(1) brightness(1); }
+}
+
+@keyframes gc-sidebar-in {
+  0% { opacity: 0; transform: translateX(-64px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes gc-sidebar-out {
+  0% { opacity: 1; transform: translateX(0); }
+  100% { opacity: 0; transform: translateX(-72px); }
+}
+
+@keyframes gc-settings-main-in {
+  0% { opacity: 0; transform: translateX(48px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes gc-settings-main-out {
+  0% { opacity: 1; transform: translateX(0); }
+  100% { opacity: 0; transform: translateX(40px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.appearance-skin-active::after {
+    opacity: 0.15;
+  }
+
+  body.appearance-skin-active .gc-panel-clone,
+  body.appearance-skin-active .gc-panel-in,
+  body.appearance-skin-active .gc-sidebar-in,
+  body.appearance-skin-active .gc-settings-main-in,
+  .gc-sidebar-leave-clone,
+  .gc-settings-main-leave-clone,
+  .gc-panel-clone {
+    animation: none !important;
+  }
+}

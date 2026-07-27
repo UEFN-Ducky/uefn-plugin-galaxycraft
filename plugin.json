@@ -1,0 +1,121 @@
+{
+  "id": "galaxycraft",
+  "kind": "plugin",
+  "version": "1.0.19",
+  "label": "Galaxy Craft",
+  "description": "StarCraft Terran command console \u2014 full-app metal HUD, scanlines, panel corners, tab swoosh.",
+  "min_app_version": "1.0.463",
+  "default_enabled": false,
+  "secret_keys": [],
+  "contributes": {
+    "appearance.profiles": [
+      {
+        "id": "galaxy",
+        "name": "Galaxy Craft",
+        "foundation": {
+          "accent": "#f59e0b",
+          "bg": "#040d14",
+          "surface": "#11151c",
+          "text": "#cbd5e1",
+          "border": "#1e3a5f"
+        },
+        "overrides": {
+          "fg": "#cbd5e1",
+          "fg-dim": "#94a3b8",
+          "muted": "#64748b",
+          "bg-panel": "rgba(10, 15, 22, 0.92)",
+          "bg-elevated": "#1a232c",
+          "sidebar": "#0a0f16",
+          "card": "#0a111a",
+          "card-hover": "#111823",
+          "panel-header": "#111823",
+          "btn-bg": "#1a232c",
+          "btn-hover": "#2a3644",
+          "btn-pressed": "#131921",
+          "dropdown-bg": "#11151c",
+          "border-light": "#5b748f",
+          "border-focus": "#0ea5e9",
+          "blue": "#0ea5e9",
+          "amber": "#f59e0b",
+          "green": "#4ade80",
+          "red": "#ef4444",
+          "accent": "#f59e0b",
+          "accent-hover": "#fbbf24",
+          "select": "#1e3a5f",
+          "font-ui": "\"Segoe UI\", \"Eurostile\", system-ui, sans-serif",
+          "font-mono": "Consolas, \"Cascadia Mono\", monospace",
+          "radius": "0px",
+          "radius-sm": "0px"
+        },
+        "status_overrides": {
+          "success": {
+            "bg": "#052e16",
+            "border": "#4ade80",
+            "text": "#4ade80"
+          },
+          "warn": {
+            "bg": "#451a03",
+            "border": "#f59e0b",
+            "text": "#f59e0b"
+          },
+          "error": {
+            "bg": "#450a0a",
+            "border": "#ef4444",
+            "text": "#fca5a5"
+          },
+          "info": {
+            "bg": "#0c4a6e",
+            "border": "#0ea5e9",
+            "text": "#0ea5e9"
+          }
+        }
+      }
+    ],
+    "appearance.skin": [
+      {
+        "id": "galaxy",
+        "label": "Galaxy Craft",
+        "entry": "ui/skin.js",
+        "css": "ui/skin.css"
+      }
+    ],
+    "appearance.css": [
+      {
+        "entry": "ui/theme.css"
+      }
+    ],
+    "appearance.effects": [
+      {
+        "id": "planets",
+        "label": "Deep space",
+        "entry": "ui/planets.js"
+      }
+    ],
+    "sounds": [
+      {
+        "id": "swoosh",
+        "label": "Tab swoosh",
+        "file": "ui/swoosh.wav"
+      }
+    ],
+    "walkthrough": {
+      "id": "galaxycraft",
+      "title": "Galaxy Craft theme",
+      "auto_start": "first_enable",
+      "settings_tab": "Appearance",
+      "steps": [
+        {
+          "target": "settings.tab.appearance",
+          "title": "Appearance",
+          "body": "This theme is available in Appearance. Press Appearance, then pick Galaxy Craft (or apply it from the profile picker).",
+          "advance": "require_click",
+          "mode": "rect"
+        }
+      ]
+    }
+  },
+  "backend": {
+    "entry": "backend",
+    "register": "register"
+  }
+}
