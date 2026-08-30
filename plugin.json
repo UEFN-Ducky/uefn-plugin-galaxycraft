@@ -1,9 +1,9 @@
 {
   "id": "galaxycraft",
   "kind": "plugin",
-  "version": "1.0.19",
+  "version": "1.0.21",
   "label": "Galaxy Craft",
-  "description": "StarCraft Terran command console \u2014 full-app metal HUD, scanlines, panel corners, tab swoosh.",
+  "description": "StarCraft Terran command console — full-app metal HUD, scanlines, panel corners, tab swoosh.",
   "min_app_version": "1.0.463",
   "default_enabled": false,
   "secret_keys": [],
