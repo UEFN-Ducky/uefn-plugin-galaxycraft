@@ -6,6 +6,7 @@
   "description": "StarCraft Terran command console — full-app metal HUD, scanlines, panel corners, tab swoosh.",
   "min_app_version": "1.0.463",
   "default_enabled": false,
+  "data_sharing": false,
   "secret_keys": [],
   "contributes": {
     "appearance.profiles": [
